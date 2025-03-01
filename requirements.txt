@@ -1,0 +1,12 @@
+fastapi==0.115.9
+uvicorn==0.34.0
+torch==2.1.2+cu118
+torchvision==0.16.2+cu118
+torchaudio==2.1.2+cu118
+numpy==1.26.4
+ollama==0.2.0
+pandas==2.2.2
+py2neo==2021.2.4
+pymongo==4.11.1
+lxml==5.3.1
+bs4==0.0.2
