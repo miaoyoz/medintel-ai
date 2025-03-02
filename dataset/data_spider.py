@@ -77,14 +77,14 @@ class MedicineSpider():
             with write_lock:
                 self.data["_id"] = self.generate_thread_safe_id()  # 生成线程安全的唯一ID
                 self.col.insert_one(self.data)
-            print(name+" 数据已存入MongoDB！")  
+            logd(name+" 数据已存入MongoDB！")  
         except Exception as e:
             loge(name+ f"插入数据失败: {e}")
           
 
     #解析html页面
-    def spider_main(self,start = 1,page = 1):
-        print(f"开始爬取页面 {start} 到 {page}")  # 调试信息
+    def spider_main(self,start = 1,end = 1):
+        print(f"开始爬取页面 {start} 到 {end}")  # 调试信息
         self.diseases = { "name": "", "description":"","category": "", "symptoms": [],"symptom_des":"", "causes": "", "prevention": "", "drugs":[], "checks": [], "recommended_foods": [], "avoided_foods": [], "complications": [], "reference_url": ""}
         self.symptoms = [] # {"name": "", "description": ""}
         self.drugs = [] # { "name": "", "ingredients": "", "usage": "", "side_effects": "", "contraindications": "",producer:""}
@@ -105,16 +105,12 @@ class MedicineSpider():
             "treatments": self.treatments
         }
         # 遍历每一页
-        for i in range(start, page+1):
+        for i in range(start, end):
             time.sleep(random.uniform(1, 3))
             url = self.url + f"t1_p{i + 1}/"
             print(f"开始爬取: {url}")  # 调试信息
             self.spider_page(url)
-            
-        
-                 
-                    
-    
+       
     # 爬取每一页数据
     def spider_page(self,url):
         html = ask_url(url)
@@ -388,7 +384,7 @@ if __name__ == '__main__':
         # 定义线程池和任务队列
         num_threads = 5  # 假设启动5个线程
         total_pages = 134  # 总共需要爬取的页面数
-        pages_per_task = 1  # 每个任务爬取1个页面
+        pages_per_task = 2  # 每个任务爬取1个页面
 
         with ThreadPoolExecutor(max_workers=num_threads) as executor:
             futures = []
