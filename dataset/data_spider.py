@@ -15,8 +15,7 @@ def logd(text):
     print(f"\033[92m{text}\033[0m")
 
 def logw(text):
-    print(f"\033[93m{text}\033[0m")
-    
+    print(f"\033[93m{text}\033[0m")    
    
 def ask_url(url):
     head = {
@@ -47,7 +46,7 @@ class MedicineSpider():
         self.symptoms = [] # {"name": "", "description": ""}
         self.drugs = [] # { "name": "", "ingredients": "", "usage": "", "side_effects": "", "contraindications": "",producer:""}
         self.producers = [] # { "name": ""}
-        self.foods = [] # { "name": "", "category": "", "benefits": "", "nutritional_info": {"carbs": 0, "protein": 0, "fat": 0}, "recommendations": ""}
+        self.foods = [] # { "name": ""}
         self.checks = [] # { "name": "", "description":"", "recommend": ""}
         self.departments = [] # {"name": ""}
         self.treatments = [] # {"name": "", "description": ""}
@@ -89,7 +88,7 @@ class MedicineSpider():
         self.symptoms = [] # {"name": "", "description": ""}
         self.drugs = [] # { "name": "", "ingredients": "", "usage": "", "side_effects": "", "contraindications": "",producer:""}
         self.producers = [] # { "name": ""}
-        self.foods = [] # { "name": "", "category": "", "benefits": "", "nutritional_info": {"carbs": 0, "protein": 0, "fat": 0}, "recommendations": ""}
+        self.foods = [] # { "name": ""}
         self.checks = [] # { "name": "", "description":"", "recommend": ""}
         self.departments = [] # {"name": ""}
         self.treatments = [] # {"name": "", "description": ""}
@@ -204,6 +203,10 @@ class MedicineSpider():
         description = ""
         html = ask_url(url)
         if html == "":
+            self.symptoms.append({
+            "name":name,
+            "description":description
+            })
             return
         soup = BeautifulSoup(html, 'html.parser')
         ul = soup.find('ul', class_="artlink")
@@ -237,6 +240,11 @@ class MedicineSpider():
         recommend = ""
         html = ask_url(url)
         if html == "":
+            self.checks.append({
+            "name":name,
+            "description":description,
+            "recommend":recommend
+            })  
             return
         soup = BeautifulSoup(html, 'html.parser')
         div = soup.find('div', id="intro")
@@ -283,6 +291,14 @@ class MedicineSpider():
             url = url + "manual/"
             html = ask_url(url)
             if html == "":
+                self.drugs.append({
+                "name": name,
+                "ingredients": ingredients,
+                "usage": usage,
+                "side_effects": side_effects,
+                "contraindications": contraindications,
+                "producer": producer
+                })
                 return
             soup = BeautifulSoup(html, 'html.parser')
             ul = soup.find('ul', class_="drug-explain")
@@ -323,13 +339,14 @@ class MedicineSpider():
         try:
             html = ask_url(url)
             if html == "":
-                return
+                return ""
             soup = BeautifulSoup(html, 'html.parser')
             div = soup.find('div', class_="article_box")
             if div is not None:
                 return div.get_text(strip=True, separator="\n")
         except Exception as e:
             loge(f"Error in spider_article: {e}")
+            return ""
 
 
     # 爬取食物
